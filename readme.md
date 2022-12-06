@@ -27,5 +27,5 @@ docker rm cloudflare-ddns-dev || true && docker build -t cloudflare-ddns . && do
 #### Deploy
 
 ```sh
-docker run --name cloudflare-ddns -d cloudflare-ddns
+sudo docker rm cloudflare-ddns -f || true && sudo docker build -t cloudflare-ddns . && sudo docker run --name cloudflare-ddns --restart=always -d cloudflare-ddns
 ```

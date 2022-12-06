@@ -52,8 +52,8 @@ func getCurrentAddr() string {
 	return string(body)
 }
 
-func getPreviousAddr() string {
-	file, err := os.Open("addr")
+func getPreviousAddr(name *string) string {
+	file, err := os.Open(*name)
 	if err != nil {
 		log.Printf("Error opening ip addr file: %s", err.Error())
 	}
@@ -113,7 +113,7 @@ func getDNSRecord(config *Config) string {
 			}
 
 			ipAddressBuffer := []byte(addr)
-			err := ioutil.WriteFile("addr", ipAddressBuffer, 0644)
+			err := ioutil.WriteFile(config.RecordName, ipAddressBuffer, 0644)
 			if err != nil {
 				log.Fatalf("Error writing to addr file: %s", err.Error())
 			}
@@ -194,12 +194,12 @@ func tryUpdate(config *Config) {
 	log.Printf("Current public ipv4 address: %s", currentAddr)
 
 	// get ip address previously set to cloudflare
-	previousAddr := getPreviousAddr()
-	if previousAddr == "" {
-		log.Printf("Error getting previous ip: %s", previousAddr)
-	} else {
-		log.Printf("Current previous ipv4 address: %s", previousAddr)
-	}
+	previousAddr := getPreviousAddr(&config.RecordName)
+	// if previousAddr == "" {
+	// 	log.Printf("Error getting previous ip: %s", previousAddr)
+	// } else {
+	// 	log.Printf("Current previous ipv4 address: %s", previousAddr)
+	// }
 
 	if strings.Trim(previousAddr, "") != strings.Trim(currentAddr, "") {
 		dnsRecord := getDNSRecord(config)
